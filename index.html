@@ -10,11 +10,11 @@
 </head>
 <body>
     <header>
-        <h1>JavaScript Coding Quiz</h1>
-        <p>Take our quiz below! Your score will be the time left on the timer. For each incorrect answer, you will loose 10 seconds from the time left on the timer below.</p>
-        <a id="high-scores" class="header-style" href="#">View high scores</a>
+        <h1 id="title">JavaScript Coding Quiz</h1>
+        <p id="header-text">Take our quiz below! Your score will be the time left on the timer. For each incorrect answer, you will loose 10 seconds from the time left below.</p>
+        <a id="view-scores" class="header-style" href="#">View high scores</a>
         <br></br>
-        <p id="timer" class="header-style">Time Left: </p>
+        <p id="timer" class="header-style"></p>
         <br></br>
     </header>
 
@@ -45,7 +45,16 @@
           </form>          
     </div>
 
+    
     <p id="feedback"></p>
+
+    <button type="click" id="reset">Reset</button>
+
+    <br></br>
+
+    <button type="click" id="submit-score">Submit Score</button>
+
+    <button type="click" id="clear-scores">Clear Scores</button>
 
     <script src="./assets/js/script.js"></script>
 </body>

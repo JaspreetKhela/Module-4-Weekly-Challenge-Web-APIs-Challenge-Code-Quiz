@@ -1,21 +1,47 @@
+// Getting the page title DOM element
+var title = document.getElementById('title');
 // Getting the form DOM element
 var form = document.getElementById('form');
 // Getting the start button DOM element
 var startButton = document.getElementById('start-quiz');
 // Getting the feedback paragraph DOM element
 var feedback = document.getElementById('feedback');
+// Getting the timer DOM element
+var timerDisplay = document.getElementById('timer');
+// Getting reset button DOM element
+var resetButton = document.getElementById('reset');
+// Getting submit score button DOM element
+var submitScoreButton = document.getElementById('submit-score');
+// Getting the clear scores button DOM element
+var clearScoresButton = document.getElementById('clear-scores');
+// Getting the header paragraph DOM element
+var headerText = document.getElementById("header-text");
+// Getitng the anchor DOM element
+var viewScores = document.getElementById("view-scores");
 
+// Initializing the allowed time for the quiz
+var time = 60;
 // Initializing the answer provided by the user
 var providedAnswerIndex = 4;
 // Initializing the index of the correct answer in a question object
 var correctAnswerIndex = 0;
-// Defining the deducted time for an incorrect answer
+// Initialize the deducted time for an incorrect answer
 var deductedTime = '10';
+// Initialize whether or not points are to be deducted for an incorrect answer
+var deductPoints = false;
 // Initialing the counter for the number of questions
 var counter = 0;
 // Initializing the number of questions to ask
 var numberOfQuestions = 5;
+// Initializing the user's info object
+var userInfo = {
+    name: '',
+    score: 0
+}
+// Initialzing the scores list
+var userScores = JSON.parse(localStorage.getItem("userScores"));
 
+// Questions array with question objects
 var questions = [
     {question:"Inside which HTML element do we put the JavaScript?",
     choices: ["<javascript>","<script>","<scripting>","<js>"],
@@ -118,9 +144,45 @@ var questions = [
     answer: "Yes"},
 ];
 
-// Update the timer
-function updateTimer(){
+// Create timer
+function startTimer(duration, display) {
+    // Declaring variables and initializing timer with the value of duration
+    var timer = duration, minutes, seconds;
+
+    // Initializing and running the timer
+    var countdown = setInterval(function () {
+        minutes = parseInt(timer / 60, 10);
+        seconds = parseInt(timer % 60, 10);
+
+        minutes = minutes < 10 ? "0" + minutes : minutes;
+        seconds = seconds < 10 ? "0" + seconds : seconds;
+
+        // Deducting points if user's answer is incorrect
+        if (deductPoints) {
+            timer = timer - parseInt(deductedTime);
+        }
+
+        // Reseting variable
+        deductPoints = false;
+        
+        // Displaying timer
+        display.textContent = "Time Left: " + minutes + ":" + seconds;
+
+        // If time runs out or if all of the provided questions have been attempted
+        if ((--timer < 0)||(counter == numberOfQuestions)) {
+            userInfo.score = timer;          
+            clearInterval(countdown);            
+            form.style.display = "none";
+            feedback.textContent = "Time is up! Your score is: " + timer;
+            submitScoreButton.style.display = "block";
+        }
+    }, 1000);
+
+    if (userInfo.score <= 0) {
+        userInfo.score = 0;
+    }
     
+    return userInfo.score;
 }
 
 // Update the question
@@ -142,41 +204,66 @@ function updateQuestion(){
     document.querySelector('label[for=option-4]').textContent = chosenQuestion.choices[3];
 }
 
-// Display the question's answer options
-function displayQuestionAnswers(){
-
-}
-
 // Check for correct answer and display the results to the page
 function correctAnswerCheck(){
-    if (providedAnswerIndex === correctAnswerIndex) {
-        feedback.textContent = 'Your answer was correct!'
+    //console.log(providedAnswerIndex,correctAnswerIndex);
+    //console.log(providedAnswerIndex == correctAnswerIndex);
+    if (providedAnswerIndex == correctAnswerIndex) {
+        feedback.textContent = 'Your answer was correct!';
+        deductPoints = false;
     }
     else {
-        feedback.textContent = 'Your answer was incorrect! We have deducted ' + deductedTime + ' seconds from the timer.'; 
+        feedback.textContent = 'Your answer was incorrect! We have deducted ' + deductedTime + ' seconds from the timer.';
+        deductPoints = true;
     }
 }
 
 // Store the user's score
-function saveScore(){
-
+function saveScore() {
+    if (!userScores) {
+        userScores = [];
+    }
+    userScores.push(userInfo);
+    localStorage.setItem("userScores", JSON.stringify(userScores));
 }
 
 // Display the high scores
-function displayScores(){
+function displayScores() {
+    form.style.display = "none";
+    submitScoreButton.style.display = "none";
+    title.textContent = "Recent Scores";
 
+    headerText.textContent = '';
+
+    for (var i = 0; i < userScores.length; i++) {
+        headerText.textContent += userScores[i].name + " has a score of " + userScores[i].score + ". ";
+    }
 }
 
-// Reset the game
-function reset(){
-
+function clearScores() {
+    localStorage.clear();
+    headerText.textContent = 'Scores have been cleared!';
 }
 
+// Updating name key value in the userInfo object
+userInfo.name = window.prompt("What is your name?", "John Smith");
+
+// Hiding form, submitScoreButton, and clearScoreButton initially
 form.style.display = "none";
+submitScoreButton.style.display = "none";
+clearScoresButton.style.display = "none";
 
 
+// Display the high scores
+viewScores.addEventListener('click', function(){
+    displayScores();
+});
 
+// Display the form
 startButton.addEventListener('click', function(){
+    //
+    headerText.textContent = "Take our quiz below! Your score will be the time left on the timer. For each incorrect answer, you will loose 10 seconds from the time left below."
+
     // Update the question and options in the form
     updateQuestion();
 
@@ -185,8 +272,10 @@ startButton.addEventListener('click', function(){
 
     // Display the form
     form.style.display = "block";
-});
 
+    // Start timer when start button is clicked
+    userInfo.score = startTimer(time, timerDisplay);
+});
 
 form.addEventListener('submit', function(event){
     // Prevent default event behaviours
@@ -200,32 +289,53 @@ form.addEventListener('submit', function(event){
 
     // If first option is chosen
     if (firstOption.checked){
-        correctAnswerCheck(firstOption.value);
+        providedAnswerIndex = firstOption.value; 
+        correctAnswerCheck();
+        firstOption.checked = false;
     }
 
     // If second option is chosen
     if (secondOption.checked){
-        correctAnswerCheck(secondOption.value);
+        providedAnswerIndex = secondOption.value;
+        correctAnswerCheck();
+        secondOption.checked = false;
     }
 
     // If third option is chosen
     if (thirdOption.checked){
-        correctAnswerCheck(thirdOption.value);
+        providedAnswerIndex = thirdOption.value;
+        correctAnswerCheck();
+        thirdOption.checked = false;
     }
 
     // If forth option is chosen
     if (forthOption.checked){
-        correctAnswerCheck(forthOption.value);
+        providedAnswerIndex = forthOption.value;
+        correctAnswerCheck();
+        forthOption.checked = false;
     }
 
     counter++;
 
-    if (counter <= numberOfQuestions){
+    if (counter < numberOfQuestions){
         // Update the question and options in the form
         updateQuestion();
-    }
-    else {
-        form.style.display = "none";
-        feedback.textContent = "The quiz is now over! Your score is: ";
     } 
+});
+
+resetButton.addEventListener('click', function(){
+    location.reload();
+});
+
+submitScoreButton.addEventListener('click', function(){
+    saveScore();
+    displayScores();
+    viewScores.style.display = "none";
+    timerDisplay.style.display = "none";
+    feedback.style.display = "none";
+    clearScoresButton.style.display = "block";
+});
+
+clearScoresButton.addEventListener('click', function(){
+    clearScores();
 });

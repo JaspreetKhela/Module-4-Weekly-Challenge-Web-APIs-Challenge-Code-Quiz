@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Coding Quiz</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <link rel="stylesheet" href="./assets/css/style.css">
+</head>
+<body>
+    <header>
+        <h1>JavaScript Coding Quiz</h1>
+        <p>Take our quiz below! Your score will be the time left on the timer. For each incorrect answer, you will loose 10 seconds from the time left on the timer below.</p>
+        <a id="high-scores" class="header-style" href="#">View high scores</a>
+        <br></br>
+        <p id="timer" class="header-style">Time Left: </p>
+        <br></br>
+    </header>
+
+    <button type="submit" id="start-quiz">Start the Quiz</button>
+    
+    <div id="quiz">        
+        <form id="form">
+            <p id="question">Question</p>
+
+            <!-- First option -->
+            <input type="radio" id="option-1" name="option" value="0">
+            <label for="option-1">Option # 1</label><br>
+
+            <!-- Second option -->
+            <input type="radio" id="option-2" name="option" value="1">
+            <label for="option-2">Option # 2</label><br>
+
+            <!-- Third option -->
+            <input type="radio" id="option-3" name="option" value="2">
+            <label for="option-3">Option # 3</label><br>
+
+            <!-- Forth option -->
+            <input type="radio" id="option-4" name="option" value="3">
+            <label for="option-4">Option # 4</label><br>
+
+            <!-- Submit button -->
+           <button type="submit" id="submit">Submit</button>
+          </form>          
+    </div>
+
+    <p id="feedback"></p>
+
+    <script src="./assets/js/script.js"></script>
+</body>
+</html>

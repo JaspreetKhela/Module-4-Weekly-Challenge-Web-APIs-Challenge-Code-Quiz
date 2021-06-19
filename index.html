@@ -1,3 +1,10 @@
+<!-- 
+Title: JavaScript Coding Quiz
+Create by: Jaspreet Khela
+Created on: June 16, 2021
+Description: A JavaScript coding quiz that tests the user on basic JavaScript concepts 
+-->
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -5,23 +12,28 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Coding Quiz</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+
+    <!-- Linking the style.css file -->
     <link rel="stylesheet" href="./assets/css/style.css">
 </head>
 <body>
+    <!-- The header contains the title, application description, a recent scores link, and the timer. -->
     <header>
         <h1 id="title">JavaScript Coding Quiz</h1>
         <p id="header-text">Take our quiz below! Your score will be the time left on the timer. For each incorrect answer, you will loose 10 seconds from the time left below.</p>
-        <a id="view-scores" class="header-style" href="#">View high scores</a>
+        <a id="view-scores" class="header-style" href="#">View recent scores</a>
         <br></br>
         <p id="timer" class="header-style"></p>
         <br></br>
     </header>
 
+    <!-- Start the quiz button -->
     <button type="submit" id="start-quiz">Start the Quiz</button>
     
+    <!-- Quiz div element -->
     <div id="quiz">        
         <form id="form">
+            <!-- Question -->
             <p id="question">Question</p>
 
             <!-- First option -->
@@ -38,24 +50,32 @@
 
             <!-- Forth option -->
             <input type="radio" id="option-4" name="option" value="3">
-            <label for="option-4">Option # 4</label><br>
+            <label for="option-4">Option # 4</label><br></br>
 
             <!-- Submit button -->
            <button type="submit" id="submit">Submit</button>
           </form>          
     </div>
 
-    
+    <br></br>
+
+    <!-- Question feedback text -->
     <p id="feedback"></p>
 
+    <!-- Reset button -->
     <button type="click" id="reset">Reset</button>
 
     <br></br>
 
+    <!-- Submit score button -->
     <button type="click" id="submit-score">Submit Score</button>
 
+    <br></br>
+
+    <!-- Clear scores button -->
     <button type="click" id="clear-scores">Clear Scores</button>
 
+    <!-- Link to the script.js file -->
     <script src="./assets/js/script.js"></script>
 </body>
 </html>

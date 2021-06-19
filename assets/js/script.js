@@ -1,3 +1,7 @@
+// __________
+// DOM element variables
+// __________
+
 // Getting the page title DOM element
 var title = document.getElementById('title');
 // Getting the form DOM element
@@ -18,6 +22,10 @@ var clearScoresButton = document.getElementById('clear-scores');
 var headerText = document.getElementById("header-text");
 // Getitng the anchor DOM element
 var viewScores = document.getElementById("view-scores");
+
+// __________
+// Initializing non-DOM element variables
+// __________
 
 // Initializing the allowed time for the quiz
 var time = 60;
@@ -40,6 +48,8 @@ var userInfo = {
 }
 // Initialzing the scores list
 var userScores = JSON.parse(localStorage.getItem("userScores"));
+// Initializing the counter for the submitScoreButton;
+var counter2 = 0;
 
 // Questions array with question objects
 var questions = [
@@ -92,11 +102,11 @@ var questions = [
     answer: "for (i=0; i<=5; i++)"},
 
     {question: "How can you add a comment in a JavaScript?",
-    choices: ["'This is a comment","<!--This is a comment-->","//This is a comment","Trick question"],
+    choices: ["'This is a comment","<!--This is a comment-->","//This is a comment","Trick question!"],
     answer: "//This is a comment"},
 
     {question: "How to insert a comment that has more than one line?",
-    choices: ["/*This comment has more than one line*/","//This comment has more than one line","<!--This comment has more than one line-->","Trick question"],
+    choices: ["/*This comment has more than one line*/","//This comment has more than one line","<!--This comment has more than one line-->","Trick question!"],
     answer: "/*This comment has more than one line*/"},
 
     {question: "What is the correct way to write a JavaScript array?",
@@ -112,15 +122,15 @@ var questions = [
     answer: "Math.max(x,y)"},
 
     {question: "What is the correct JavaScript syntax for opening a new window called 'w2' ?",
-    choices: ["w2 = window.new('http://www.w3schools.com')","w2 = window.open('http://www.w3schools.com')","What?","Trick question"],
+    choices: ["w2 = window.new('http://www.w3schools.com')","w2 = window.open('http://www.w3schools.com')","What?","Trick question!"],
     answer: "w2 = window.open('http://www.w3schools.com')"},
 
     {question: "JavaScript is the same as Java.",
-    choices: ["True","False","What?","Trick question"],
+    choices: ["True","False","What?","Trick question!"],
     answer: "False"},
 
     {question: "How can you detect the client's browser name?",
-    choices: ["client.navName","browser.name","navigator.appName","Trick question"],
+    choices: ["client.navName","browser.name","navigator.appName","Trick question!"],
     answer: "navigator.appName"},
 
     {question: "Which event occurs when the user clicks on an HTML element?",
@@ -143,6 +153,10 @@ var questions = [
     choices: ["Yes","No","Maybe","So"],
     answer: "Yes"},
 ];
+
+// __________
+// Creating functions
+// __________
 
 // Create timer
 function startTimer(duration, display) {
@@ -178,10 +192,12 @@ function startTimer(duration, display) {
         }
     }, 1000);
 
+    // If the timer runs out, then the user's score will be 0
     if (userInfo.score <= 0) {
         userInfo.score = 0;
     }
     
+    // Returning the value of the user's score
     return userInfo.score;
 }
 
@@ -205,13 +221,13 @@ function updateQuestion(){
 }
 
 // Check for correct answer and display the results to the page
-function correctAnswerCheck(){
-    //console.log(providedAnswerIndex,correctAnswerIndex);
-    //console.log(providedAnswerIndex == correctAnswerIndex);
+function correctAnswerCheck() {
+    // Correct answer message
     if (providedAnswerIndex == correctAnswerIndex) {
         feedback.textContent = 'Your answer was correct!';
         deductPoints = false;
     }
+    // Incorrect answer message
     else {
         feedback.textContent = 'Your answer was incorrect! We have deducted ' + deductedTime + ' seconds from the timer.';
         deductPoints = true;
@@ -227,23 +243,38 @@ function saveScore() {
     localStorage.setItem("userScores", JSON.stringify(userScores));
 }
 
-// Display the high scores
+// Display the recent scores
 function displayScores() {
-    form.style.display = "none";
-    submitScoreButton.style.display = "none";
     title.textContent = "Recent Scores";
+    viewScores.style.display = "none";
+    form.style.display = "none";
+    timerDisplay.style.display = "none";
+    submitScoreButton.style.display = "none";
+    clearScoresButton.style.display = "block";
+
+    // Display the submitScoreButton if the user has not already submitted a score
+    if (counter2 == 0) {
+        submitScoreButton.style.display = "block";
+    }
 
     headerText.textContent = '';
 
+    // Display recent scores
     for (var i = 0; i < userScores.length; i++) {
-        headerText.textContent += userScores[i].name + " has a score of " + userScores[i].score + ". ";
+        headerText.textContent += userScores[i].name + " had a score of " + userScores[i].score + ". " + "| ";
     }
 }
 
+// Clear recent scores from localStorage
 function clearScores() {
     localStorage.clear();
+    submitScoreButton.style.display = "none"
     headerText.textContent = 'Scores have been cleared!';
 }
+
+// __________
+// The application's initial script execution starts here
+// __________
 
 // Updating name key value in the userInfo object
 userInfo.name = window.prompt("What is your name?", "John Smith");
@@ -253,19 +284,38 @@ form.style.display = "none";
 submitScoreButton.style.display = "none";
 clearScoresButton.style.display = "none";
 
+// Display the recent scores
+viewScores.addEventListener('click', function() {
+    // There are recent scores to display from the localStorage
+    if (JSON.parse(localStorage.getItem("userScores"))) {
+        counter2++;
+        displayScores();
+    }
 
-// Display the high scores
-viewScores.addEventListener('click', function(){
-    displayScores();
+    // There are no recent scores to display from localStorage
+    else {
+        window.alert("There are no recent scores.")
+    }
 });
+
+// __________
+// Event listeners
+// __________
 
 // Display the form
 startButton.addEventListener('click', function(){
-    //
+    // Counter for the submitScoreButton
+    counter2 = 0;
+    
+    // Update the title and description of the page
+    title.textContent = "JavaScript Coding Quiz";
     headerText.textContent = "Take our quiz below! Your score will be the time left on the timer. For each incorrect answer, you will loose 10 seconds from the time left below."
 
-    // Update the question and options in the form
+    // Update the question and answer options in the form
     updateQuestion();
+
+    viewScores.style.display = "block";
+    timerDisplay.style.display = "block";
 
     // Hide the start button
     startButton.style.display = "none";
@@ -277,6 +327,7 @@ startButton.addEventListener('click', function(){
     userInfo.score = startTimer(time, timerDisplay);
 });
 
+// Submit data from the form
 form.addEventListener('submit', function(event){
     // Prevent default event behaviours
     event.preventDefault();
@@ -318,16 +369,19 @@ form.addEventListener('submit', function(event){
     counter++;
 
     if (counter < numberOfQuestions){
-        // Update the question and options in the form
+        // Update the question and answer options in the form
         updateQuestion();
     } 
 });
 
+// Reset the quiz by reloading the page
 resetButton.addEventListener('click', function(){
     location.reload();
 });
 
+// Submit the user's score
 submitScoreButton.addEventListener('click', function(){
+    counter2++;
     saveScore();
     displayScores();
     viewScores.style.display = "none";
@@ -336,6 +390,7 @@ submitScoreButton.addEventListener('click', function(){
     clearScoresButton.style.display = "block";
 });
 
+// Clear the recent scores from localStorage
 clearScoresButton.addEventListener('click', function(){
     clearScores();
 });
